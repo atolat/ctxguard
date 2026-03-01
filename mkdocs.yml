@@ -42,4 +42,5 @@ nav:
   - Journal:
     - The Problem: journal/01-the-problem.md
   - Design:
+    - Architecture: design/architecture.md
     - Report Schema: design/report-schema.md

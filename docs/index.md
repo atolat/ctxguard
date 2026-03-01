@@ -19,4 +19,5 @@ ctxguard analyze --repo . --out report.json
 - [The Problem](journal/01-the-problem.md) — why this exists, research, prior art
 
 ### Design
+- [Architecture](design/architecture.md) — components, data flow, invariants
 - [Report Schema](design/report-schema.md) — canonical output format (v0.1.0)
