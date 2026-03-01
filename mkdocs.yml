@@ -1,0 +1,43 @@
+site_name: ctxguard
+site_description: Context bloat/rot monitor for AI coding agents
+repo_url: https://github.com/atolat/ctxguard
+
+docs_dir: docs
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: black
+    accent: lime
+  font:
+    text: JetBrains Mono
+    code: JetBrains Mono
+  features:
+    - navigation.sections
+    - navigation.expand
+    - content.code.copy
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+      use_pygments: true
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - admonition
+
+nav:
+  - Home: index.md
+  - Design:
+    - Report Schema: design/report-schema.md
