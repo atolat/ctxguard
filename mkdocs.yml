@@ -39,5 +39,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Journal:
+    - The Problem: journal/01-the-problem.md
   - Design:
     - Report Schema: design/report-schema.md

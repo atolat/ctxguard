@@ -15,5 +15,8 @@ ctxguard analyze --repo . --out report.json
 
 ## Docs
 
+### Journal
+- [The Problem](journal/01-the-problem.md) — why this exists, research, prior art
+
 ### Design
 - [Report Schema](design/report-schema.md) — canonical output format (v0.1.0)
