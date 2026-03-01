@@ -59,9 +59,4 @@ That's what ctxguard does.
 
 v1 was vibe-coded with Claude Code in a single session. The walker, classifier, estimator, and report schema all came out of one long conversation. It works. It's tested. It's also the naive version.
 
-More deliberate, human-in-the-loop increments coming next:
-
-- Phase 1: `ctxguard diff` for delta metrics across commits
-- Phase 2: Near-duplicate detection, doc staleness heuristics
-- Phase 3: Prompt injection signature scanning
-- Phase 4: Retrieval dominance proxy (BM25/TF-IDF)
+More deliberate, human-in-the-loop increments coming next.
