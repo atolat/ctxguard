@@ -1,0 +1,87 @@
+{
+  "schema_version": "0.1.0",
+  "tool_version": "0.1.0-dev",
+  "metadata": {
+    "repo_path": "/home/user/myproject",
+    "git_commit": "abc1234",
+    "timestamp": "2026-03-01T10:00:00Z"
+  },
+  "summary": {
+    "bloat_score": 0.35
+  },
+  "file_entries": [
+    {
+      "path": "src/main.go",
+      "category": "code",
+      "location": "src/",
+      "size_bytes": 2400,
+      "tokens": 600,
+      "lines": 80
+    },
+    {
+      "path": "README.md",
+      "category": "documentation",
+      "location": "root",
+      "size_bytes": 4000,
+      "tokens": 1000,
+      "lines": 120
+    },
+    {
+      "path": "vendor/lib/big.js",
+      "category": "vendor",
+      "location": "vendor/",
+      "size_bytes": 500000,
+      "tokens": 125000,
+      "lines": 10000
+    },
+    {
+      "path": "logo.png",
+      "category": "other",
+      "location": "root",
+      "size_bytes": 204800,
+      "tokens": 0,
+      "lines": 0,
+      "skipped": true,
+      "skip_reason": "binary"
+    }
+  ],
+  "metrics": {
+    "total_files": 4,
+    "total_tokens": 126600,
+    "total_bytes": 711200,
+    "total_lines": 10200,
+    "by_category": {
+      "code": { "files": 1, "tokens": 600, "bytes": 2400, "lines": 80 },
+      "documentation": { "files": 1, "tokens": 1000, "bytes": 4000, "lines": 120 },
+      "vendor": { "files": 1, "tokens": 125000, "bytes": 500000, "lines": 10000 },
+      "other": { "files": 1, "tokens": 0, "bytes": 204800, "lines": 0 }
+    },
+    "top_by_tokens": [
+      { "path": "vendor/lib/big.js", "tokens": 125000 },
+      { "path": "README.md", "tokens": 1000 },
+      { "path": "src/main.go", "tokens": 600 }
+    ]
+  },
+  "findings": [
+    {
+      "id": "BLOAT-001",
+      "severity": "warning",
+      "kind": "bloat",
+      "message": "Vendor directory contains 98.7% of total tokens",
+      "evidence": {
+        "paths": ["vendor/"],
+        "stats": {
+          "vendor_token_pct": 98.7
+        }
+      }
+    }
+  ],
+  "recommendations": [
+    {
+      "action": "Add vendor/ to .ctxignore",
+      "target_paths": ["vendor/"],
+      "rationale": "Vendor files dominate context; excluding them reduces token count by 98.7%",
+      "estimated_impact": "~125000 tokens saved"
+    }
+  ]
+}
