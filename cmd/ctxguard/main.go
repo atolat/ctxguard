@@ -13,6 +13,7 @@ import (
 	"github.com/arpan/ctxguard/internal/analyzer"
 	"github.com/arpan/ctxguard/internal/budget"
 	"github.com/arpan/ctxguard/internal/checkfile"
+	"github.com/arpan/ctxguard/internal/graph"
 )
 
 const usage = `ctxguard — context bloat/rot monitor for AI coding agents
@@ -24,6 +25,7 @@ Commands:
   analyze      Analyze a repository and produce a JSON report
   budget       Visualize context window budget for a model
   check-file   Check a single file's context cost (for hooks)
+  graph        Show import dependency graph and file centrality
   models       List supported models
 
 Flags (analyze):
@@ -61,6 +63,11 @@ func main() {
 		}
 	case "check-file":
 		if err := runCheckFile(os.Args[2:]); err != nil {
+			fmt.Fprintf(os.Stderr, "error: %v\n", err)
+			os.Exit(1)
+		}
+	case "graph":
+		if err := runGraph(os.Args[2:]); err != nil {
 			fmt.Fprintf(os.Stderr, "error: %v\n", err)
 			os.Exit(1)
 		}
@@ -174,6 +181,38 @@ func runCheckFile(args []string) error {
 	if msg != "" {
 		fmt.Println(msg)
 	}
+	return nil
+}
+
+func runGraph(args []string) error {
+	fs := flag.NewFlagSet("graph", flag.ExitOnError)
+	repoPath := fs.String("repo", ".", "path to the repository")
+	topN := fs.Int("top", 15, "number of top files to show")
+	jsonOut := fs.Bool("json", false, "output as JSON")
+	fs.Parse(args)
+
+	absRepo, err := filepath.Abs(*repoPath)
+	if err != nil {
+		return err
+	}
+
+	files, modulePath, err := graph.ParseRepo(absRepo)
+	if err != nil {
+		return fmt.Errorf("parse repo: %w", err)
+	}
+
+	g := graph.Build(files, modulePath)
+
+	if *jsonOut {
+		data, err := json.MarshalIndent(g, "", "  ")
+		if err != nil {
+			return err
+		}
+		fmt.Println(string(data))
+		return nil
+	}
+
+	graph.Render(g, *topN)
 	return nil
 }
 
