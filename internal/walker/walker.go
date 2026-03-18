@@ -76,6 +76,7 @@ func Walk(root string, matcher *IgnoreMatcher, opts Options, fn func(Entry) erro
 		}
 
 		// We only emit files, not directories.
+		// Also resolve symlinks — a symlink to a directory should be skipped.
 		if d.IsDir() {
 			return nil
 		}
@@ -83,6 +84,21 @@ func Walk(root string, matcher *IgnoreMatcher, opts Options, fn func(Entry) erro
 		info, err := d.Info()
 		if err != nil {
 			return err
+		}
+
+		// If this is a symlink, check if it points to a directory.
+		if info.Mode()&os.ModeSymlink != 0 {
+			resolved, err := filepath.EvalSymlinks(path)
+			if err != nil {
+				return nil // skip broken symlinks
+			}
+			ri, err := os.Stat(resolved)
+			if err != nil {
+				return nil
+			}
+			if ri.IsDir() {
+				return nil // skip symlinks to directories
+			}
 		}
 
 		entry := Entry{

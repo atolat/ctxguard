@@ -39,8 +39,11 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Context Engineering:
+    - Context Window Anatomy: context-engineering/01-context-window-anatomy.md
   - Journal:
     - The Problem: journal/01-the-problem.md
   - Design:
     - Architecture: design/architecture.md
+    - Roadmap: design/roadmap.md
     - Report Schema: design/report-schema.md
