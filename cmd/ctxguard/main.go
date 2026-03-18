@@ -14,6 +14,7 @@ import (
 	"github.com/arpan/ctxguard/internal/budget"
 	"github.com/arpan/ctxguard/internal/checkfile"
 	"github.com/arpan/ctxguard/internal/graph"
+	"github.com/arpan/ctxguard/internal/transcript"
 )
 
 const usage = `ctxguard — context bloat/rot monitor for AI coding agents
@@ -26,6 +27,7 @@ Commands:
   budget       Visualize context window budget for a model
   check-file   Check a single file's context cost (for hooks)
   graph        Show import dependency graph and file centrality
+  session      Analyze a Claude Code session transcript
   models       List supported models
 
 Flags (analyze):
@@ -68,6 +70,11 @@ func main() {
 		}
 	case "graph":
 		if err := runGraph(os.Args[2:]); err != nil {
+			fmt.Fprintf(os.Stderr, "error: %v\n", err)
+			os.Exit(1)
+		}
+	case "session":
+		if err := runSession(os.Args[2:]); err != nil {
 			fmt.Fprintf(os.Stderr, "error: %v\n", err)
 			os.Exit(1)
 		}
@@ -181,6 +188,39 @@ func runCheckFile(args []string) error {
 	if msg != "" {
 		fmt.Println(msg)
 	}
+	return nil
+}
+
+func runSession(args []string) error {
+	fs := flag.NewFlagSet("session", flag.ExitOnError)
+	transcriptPath := fs.String("transcript", "", "path to transcript .jsonl file")
+	jsonOut := fs.Bool("json", false, "output as JSON")
+	windowOverride := fs.Int("window", 0, "override context window size")
+	fs.Parse(args)
+
+	if *transcriptPath == "" {
+		return fmt.Errorf("--transcript is required (path to .jsonl file)")
+	}
+
+	s, err := transcript.Parse(*transcriptPath)
+	if err != nil {
+		return err
+	}
+
+	if *windowOverride > 0 {
+		s.WindowSize = *windowOverride
+	}
+
+	if *jsonOut {
+		data, err := json.MarshalIndent(s, "", "  ")
+		if err != nil {
+			return err
+		}
+		fmt.Println(string(data))
+		return nil
+	}
+
+	transcript.Render(s)
 	return nil
 }
 
